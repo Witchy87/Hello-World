@@ -1,0 +1,79 @@
+
+<!-- saved from url=(0048)http://www.catb.org/jargon/html/email-style.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" class="gr__catb_org"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter&nbsp;6.&nbsp;Email Quotes and Inclusion Conventions</title><link rel="stylesheet" href="./Chapter 6. Email Quotes and Inclusion Conventions_files/jargon.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.61.0"><link rel="home" href="http://www.catb.org/jargon/html/index.html" title="The Jargon File"><link rel="up" href="http://www.catb.org/jargon/html/pt01.html" title="Part I. Introduction"><link rel="previous" href="http://www.catb.org/jargon/html/writing-style.html" title="Chapter 5. Hacker Writing Style"><link rel="next" href="http://www.catb.org/jargon/html/speech-style.html" title="Chapter 7. Hacker Speech Style"></head><body data-gr-c-s-loaded="true"><div class="navheader"><table width="100%" summary="Navigation header"><tbody><tr><th colspan="3" align="center">Chapter&nbsp;6.&nbsp;Email Quotes and Inclusion Conventions</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="http://www.catb.org/jargon/html/writing-style.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;I.&nbsp;Introduction</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="http://www.catb.org/jargon/html/speech-style.html">Next</a></td></tr></tbody></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="email-style">Chapter&nbsp;6.&nbsp;Email Quotes and Inclusion Conventions</a></h2></div></div><div></div><p><a id="email-style">One area where conventions for on-line writing are still in some flux is
+the marking of included material from earlier messages — what would be
+called ‘block quotations’ in ordinary English.  From the usual
+typographic convention employed for these (smaller font at an extra indent),
+there derived a practice of included text being indented by one ASCII TAB
+(0001001) character, which under Unix and many other environments gives the
+appearance of an 8-space indent.</a></p><p><a id="email-style">Early mail and netnews readers had no facility for including messages
+this way, so people had to paste in copy manually.  BSD
+<span class="citerefentry"><span class="refentrytitle">Mail</span>(1)</span> was the first message agent to support inclusion,
+and early Usenetters emulated its style.  But the TAB character tended to push
+included text too far to the right (especially in multiply nested inclusions),
+leading to ugly wraparounds.  After a brief period of confusion (during which
+an inclusion leader consisting of three or four spaces became established in
+EMACS and a few mailers), the use of leading <tt class="literal">&gt;</tt> or
+<tt class="literal">&gt; </tt> became standard, perhaps owing to its use in
+<span class="citerefentry"><span class="refentrytitle">ed</span>(1)</span> to display tabs (alternatively, it may derive from
+the <tt class="literal">&gt;</tt> that some early Unix mailers used to quote lines
+starting with "From" in text, so they wouldn't look like the beginnings of new
+message headers).  Inclusions within inclusions keep their
+<tt class="literal">&gt;</tt> leaders, so the ‘nesting level' of a quotation
+is visually apparent.</a></p><p><a id="email-style">The practice of including text from the parent article when posting a
+followup helped solve what had been a major nuisance on Usenet: the fact that
+articles do not arrive at different sites in the same order.  Careless posters
+used to post articles that would begin with, or even consist entirely of,
+“<span class="quote">No, that's wrong</span>” or “<span class="quote">I agree</span>” or the like.  It was
+hard to see who was responding to what.  Consequently, around 1984, new
+news-posting software evolved a facility to automatically include the text of
+a previous article, marked with “&gt; ” or whatever the poster
+chose.  The poster was expected to delete all but the relevant lines.  The
+result has been that, now, careless posters post articles containing the
+<span class="emphasis"><em>entire</em></span> text of a preceding article,
+<span class="emphasis"><em>followed</em></span> only by “<span class="quote">No, that's wrong</span>” or
+“<span class="quote">I agree</span>”.</a></p><p><a id="email-style">Many people feel that this cure is worse than the original disease, and
+there soon appeared newsreader software designed to let the reader skip over
+included text if desired.  Today, some posting software rejects articles
+containing too high a proportion of lines beginning with ‘&gt;' —
+but this too has led to undesirable workarounds, such as the deliberate
+inclusion of zero-content filler lines which aren't quoted and thus pull the
+message below the rejection threshold.</a></p><p><a id="email-style">Inclusion practice is still evolving, and disputes over the
+‘correct’ inclusion style occasionally lead to
+</a><a href="http://www.catb.org/jargon/html/H/holy-wars.html"><i class="glossterm">holy wars</i></a>.</p><p>Most netters view an inclusion as a promise that comment on it will
+immediately follow.  The preferred, conversational style looks like
+this,</p><div class="literallayout"><p><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&nbsp;relevant&nbsp;excerpt&nbsp;1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response&nbsp;to&nbsp;excerpt<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&nbsp;relevant&nbsp;excerpt&nbsp;2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response&nbsp;to&nbsp;excerpt<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&nbsp;relevant&nbsp;excerpt&nbsp;3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response&nbsp;to&nbsp;excerpt<br>
+</p></div><p>or for short messages like this:</p><div class="literallayout"><p><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&nbsp;entire&nbsp;message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response&nbsp;to&nbsp;message<br>
+</p></div><p>Thanks to poor design of some PC-based mail agents (notably Microsoft
+Outlook and Outlook Express), one will occasionally see the entire quoted
+message <span class="emphasis"><em>after</em></span> the response, like this</p><div class="literallayout"><p><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response&nbsp;to&nbsp;message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&nbsp;entire&nbsp;message<br>
+</p></div><p>but this practice is strongly deprecated.</p><p>Though <tt class="literal">&gt;</tt> remains the standard inclusion leader,
+<tt class="literal">|</tt> is occasionally used for extended quotations where
+original variations in indentation are being retained (one mailer even
+combines these and uses <tt class="literal">|&gt;</tt>).  One also sees different
+styles of quoting a number of authors in the same message: one (deprecated
+because it loses information) uses a leader of <tt class="literal">&gt; </tt> for
+everyone, another (the most common) is <tt class="literal">&gt; &gt; &gt; &gt;
+</tt>, <tt class="literal">&gt; &gt; &gt; </tt>, etc. (or
+<tt class="literal">&gt;&gt;&gt;&gt; </tt>, <tt class="literal">&gt;&gt;&gt;</tt>, etc.,
+depending on line length and nesting depth) reflecting the original order of
+messages, and yet another is to use a different citation leader for each
+author, say <tt class="literal">&gt; </tt>, <tt class="literal">: </tt>, <tt class="literal">|
+</tt>, <tt class="literal">@</tt> (preserving nesting so that the inclusion
+order of messages is still apparent, or tagging the inclusions with authors'
+names).  Yet <span class="emphasis"><em>another</em></span> style is to use each poster's
+initials (or login name) as a citation leader for that poster.</p><p>Occasionally one sees a <tt class="literal"># </tt> leader used for quotations
+from authoritative sources such as standards documents; the intended allusion
+is to the root prompt (the special Unix command prompt issued when one is
+running as the privileged super-user).</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tbody><tr><td width="40%" align="left"><a accesskey="p" href="http://www.catb.org/jargon/html/writing-style.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="http://www.catb.org/jargon/html/pt01.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="http://www.catb.org/jargon/html/speech-style.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;5.&nbsp;Hacker Writing Style&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="http://www.catb.org/jargon/html/index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;7.&nbsp;Hacker Speech Style</td></tr></tbody></table></div>
+</div></body></html>

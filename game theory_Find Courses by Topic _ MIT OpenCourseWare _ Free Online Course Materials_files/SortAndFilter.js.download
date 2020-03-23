@@ -1,0 +1,400 @@
+// shows the filtered courses obtained from get filtered courses
+function showFilteredCourses(){
+    var courseResults = $("ul.coursesList");
+    header_row_string = '<li class = "courseListHeaderRow"><ul class = "courseRow"><li class = "courseNumCol">Course #</li><li class = "courseTitleCol">Course Title</li><li class = "courseLevelCol">Level</li></ul></li>'
+    $(courseResults).html(header_row_string);
+
+    var courses_id_list={};
+    var filteredcourses = getFilteredCourses(currentResults);
+    $("#resultCount").html(filteredcourses.length);
+    var l=0;
+
+    //filteredcourses = custom_sort(filteredcourses,true);
+
+
+	$.each(filteredcourses,function(key,value){		
+            if (courses_id_list[this.id] != true){
+                courses_id_list[this.id]=true;
+                ul_courseRow = $('<ul/>', {
+                    class : 'courseRow'
+                });
+
+                li_courseNumCol = $('<li/>', {
+                    class : 'courseNumCol'
+                })
+               
+                a_h4_title = $('<h4/>', {
+                    class : 'course_title'
+                })
+                var url = ''
+               	if (this.href.charAt(0)=='/')
+               	{
+               		url+=this.href;
+               	}
+               	else
+               	{
+               		url+='/'+this.href
+               	}
+                a_courseNumCol = $('<a/>', {
+                    class : 'preview',
+                    rel : "coursePreview",
+                    href : url,
+                    onClick : "checkSR(this,'" +this.department+ "')",
+                });
+                li_courseTitleCol = $('<li/>', {
+                    class : 'courseTitleCol'
+                });
+
+                li_courseLevelCol = $('<li/>', {
+                    class : 'courseLevelCol'
+                });
+                a_courseNumCol.text(this.mcn).appendTo(li_courseNumCol);
+                a_courseNumCol.clone().text(this.title+' ('+this.sem+')').appendTo(a_h4_title);
+                a_courseNumCol.clone().text(this.level).appendTo(li_courseLevelCol);
+                
+                a_h4_title.appendTo(li_courseTitleCol)
+      
+                li_courseNumCol.appendTo(ul_courseRow);
+                li_courseTitleCol.appendTo(ul_courseRow);
+                li_courseLevelCol.appendTo(ul_courseRow);
+                li_row = $('<li/>', {
+                        class : 'courseListRow',
+                        'data-level' : this.level,
+                        'data-semester' : this.sem,
+                        'data-year' : this.sem.split(" ")[1],
+                        'data-courseno' : this.sort_as,
+                        'data-title' : this.title,
+                        'data-from_year' : this.sem.split(" ")[1],
+                        'data-complete_video' : this.completeVideo,
+                        'data-complete_audio':this.completeAudio,
+                        'data-other_video':this.otherVideo,
+                        'data-other_audio':this.otherAudio,
+                        'data-online_textbooks':this.onlineTextbooks,
+                        'data-complete_lectures':this.completeLectures,
+                        'data-assesments_with_solution':this.assesmentsWithSolution,
+                        'data-student_projects':this.studentProjects,
+                        'data-instructor_insights':this.instructorInsights
+                        })
+                if(l%2==0){
+                    li_row.addClass("evenRow")
+                    }
+                else{
+                    li_row.addClass("oddRow")
+                    }
+                li_row.append(ul_courseRow);
+                li_row.appendTo($(courseResults));
+                l++;
+            }
+}); 
+		setLiveRegionCount($("#courseList"), "tr");		
+		filterCourses();
+		appendSortedCourses();	
+	}
+	
+//Author Rahul
+function multiFilterSelector()
+{
+    filter_obj = {
+        'completeAudio':'data-complete_audio',
+        'otherVideo' : 'data-other_video',
+        'otherAudio' : 'data-other_audio',
+        'onlineTextbooks' : 'data-online_textbooks',
+        'completeLectures' : 'data-complete_lectures',
+        'assesmentsWithSolution' : 'data-assesments_with_solution',
+        'studentProjects' : 'data-student_projects',
+        'instructorInsights' : 'data-instructor_insights',
+        'completeVideo' : 'data-complete_video'
+    }
+    checklist = $('div.ms-drop.bottom :input');
+    checked_features = [];
+    for (i=0;i<checklist.length;i++)
+    {
+        if (checklist[i].checked)
+        {
+            checked_features.push(checklist[i])
+        }
+
+}
+    retList = []
+    for (i=0;i<checked_features.length;i++)
+    {
+        retList.push(filter_obj[checked_features[i].value])
+    }
+    console.log('MultiFilterSelector fired')
+    return retList;
+}
+
+function filterCourses(sectionToFilter){
+	//filters the courses lists based on selected filtering options
+	all_courses = $(sectionToFilter).find("li.courseListRow");
+	level = $("#filterCoursesListLevel").val();
+	multi_features = multiFilterSelector();
+	filter_criteria = 'li.courseListRow';
+	
+	if(level && level != "0"){
+		filter_criteria = filter_criteria + '[data-level="' + level + '"]'
+	}
+	for( i=0;i<multi_features.length;i++)
+	{
+		filter_criteria = filter_criteria + '['+multi_features[i]+'="true"]';
+	}
+	if(filter_criteria!= ''){
+		console.log('hiding courses')
+		all_courses.hide();
+	}
+	selected_courses = $(sectionToFilter).find(filter_criteria)
+	if(selected_courses.length==0 && all_courses.length>0 )
+	{
+		$(sectionToFilter).next('.noResultsMsg').css('display','inherit');
+	}
+	else
+	{
+		$(sectionToFilter).next('.noResultsMsg').css('display','none');
+	}
+	
+	//Logic to keep evenRow oddRow class still valid
+	for(i=0;i<selected_courses.length;i++)
+	{
+		if(i%2==0)
+		{
+			selected_courses[i].className = "courseListRow evenRow"
+		}
+		else{
+			selected_courses[i].className = "courseListRow oddRow"
+		}
+	}
+	selected_courses.show();
+	vals = []
+}
+
+// method for formatting sort_as attribute of a course in order to determine coursenumber1 and coursenumber2 */
+function formatMCN (str, max) {
+	return str.length < max ? formatMCN("0" + str, max) : str;
+}
+
+function sortCourses(sectionToSort){
+	//declared an javascript object which relates select options with attributes
+	sort_by_obj = {
+		'course_title' : 'data-title',
+		'oldest_newest' : 'data-semester',
+		'course_number' : 'data-courseno'
+	}
+	console.log('Sort method fired')
+	sorting_selected = $('#SortingOption').find('option:selected')
+	sorting_order = sorting_selected.attr('order') 
+	sort_by = sorting_selected.val()
+	sorting_variable = 'data-courseno'
+	course_numbers = sectionToSort.find("li.courseListRow").get();
+
+	var sort_based_on_selection = function(position1, position2) {
+		pos1_sorting_value = position1.getAttribute(sorting_variable)
+		pos2_sorting_value = position2.getAttribute(sorting_variable)
+		
+		if(sorting_variable == 'data-courseno') {
+		// Formatting to fix sort by courseNumber
+		var coursenumber1 = formatMCN(pos1_sorting_value.split('.')[0],2);
+		var coursenumber2 = formatMCN(pos2_sorting_value.split('.')[0],2);
+		var lastcoursenumber1 = pos1_sorting_value.split('.')[1];
+		var lastcoursenumber2 = pos2_sorting_value.split('.')[1];
+		// check if coursenumber1 and 2 contains digits only
+		flag1 = /^\d+$/.test(coursenumber1);
+		flag2 = /^\d+$/.test(coursenumber2);
+
+		//if coursenumber1 contains digits only and coursenumber2 doesn't, don't swap
+		if(flag1 && !flag2)
+		{
+			return -1;
+		}
+		//swap if coursenumber2 contains digits only but coursenumber1 doesn't
+		else if (flag2 && !flag1)
+		{
+			return 1
+		}
+		//for other two conditions do usual sorting
+		else
+		{
+			if(coursenumber1.localeCompare(coursenumber2)==0)
+			{
+				return lastcoursenumber1.localeCompare(lastcoursenumber2)
+			}
+			else
+			{
+				return coursenumber1.localeCompare(coursenumber2)
+			}
+		}
+
+
+	}
+	else if(sorting_variable == 'data-title')
+	{
+		pos1_sorting_value += '('+ position1.getAttribute('data-semester')+')';
+		pos2_sorting_value += '('+ position2.getAttribute('data-semester')+')';
+		return pos1_sorting_value.localeCompare(pos2_sorting_value);
+	}
+	else {
+		
+		sem_array = ['Fall','Summer','Spring','January'];
+		year_value1= "";
+		year_value2= "";
+		//console.log(pos1_sorting_value,pos2_sorting_value);		
+		if(pos1_sorting_value.includes('January IAP'))
+		{
+			/* Get the year value. E.g From January IAP 2006, get '2006' */
+			year_value1 = parseInt(pos1_sorting_value.split(' ')[2]); 
+		}
+		else
+		{
+			// Get the year value in other 3 cases
+			year_value1 = parseInt(pos1_sorting_value.split(' ')[pos1_sorting_value.split(' ').length-1]);
+		}
+		//Now do the same for the second <li> to compare with in the javascript default sort() function
+		if(pos2_sorting_value.includes('January IAP'))
+		{
+			/* Get the year value. E.g From January IAP 2006, get '2006' */
+			year_value2 = parseInt(pos2_sorting_value.split(' ')[2]);
+		}
+		else
+		{
+			// Get the year value in other 3 cases
+			year_value2 = parseInt(pos2_sorting_value.split(' ')[pos2_sorting_value.split(' ').length-1]);
+		}
+		//Now get the semester value		
+		sem_value1 = pos1_sorting_value.split(' ')[0];
+		sem_value2 = pos2_sorting_value.split(' ')[0];
+		
+
+		if (year_value1==year_value2)
+		{
+			//If year is same for both, then sorting has to be done based on Semester which depends on sem_array.
+			// So Fall will come before Summer before Spring before January IAP
+			index1 = parseInt(sem_array.indexOf(sem_value1));
+			index2 = parseInt(sem_array.indexOf(sem_value2));
+            return index1-index2;
+        }
+        else
+        {
+        	//Sort on year value
+        	return year_value2-year_value1;
+        }
+    }
+
+}
+
+course_numbers.sort(sort_based_on_selection)
+sorting_variable = sort_by_obj[sort_by]
+
+course_numbers.sort(sort_based_on_selection)
+	// Keep the odd and even row classes still valid after sorting
+	for(i=0;i<course_numbers.length;i++)
+	{
+		if(i%2==0)
+		{
+			course_numbers[i].className = "courseListRow evenRow"
+		}
+		else{
+			course_numbers[i].className = "courseListRow oddRow"
+		}
+	}
+	append_string = ''
+	for(i=0; i<course_numbers.length; i++){
+		append_string = append_string + course_numbers[i].outerHTML
+	}
+	
+	return append_string
+}
+
+
+function appendSortedCourses(){		
+	sorting_selected = $('#SortingOption').find('option:selected')
+	sort_by = sorting_selected.val()
+	sorting_order = sorting_selected.attr('order')
+
+	all_sections = $('div.courseListDiv');
+	$.each(all_sections,function()
+	{
+		all_courses = $(this).find("li.courseListRow");
+		sorted_course_string = sortCourses($(this))
+		courselist_container = $(this).find("ul.coursesList").get()[0];
+		course_list_header = $(courselist_container).find('li.courseListHeaderRow')[0].outerHTML
+		$(courselist_container).html(course_list_header + sorted_course_string);
+		filterCourses($(this))	
+	})
+		
+}
+
+
+
+function CourseListSortingAndFiltering(){
+	appendSortedCourses();
+	gaPrefix = 'FS-';
+	//filter the results on changing any filtering parameter
+	$('select.courseListFilter').on('change', function(){
+		data_level = $("#filterCoursesListLevel option:selected").text();
+		try {
+			trackEvents(gaPrefix + data_level,'Level Click', 'Sort/Filter');
+		} catch(e) {
+			console.error('Could not track Level Click (' + error.name + ')');
+		}
+		all_sections = $('div.courseListDiv');
+		$.each(all_sections,function()
+		{
+		all_courses = $(this).find("li.courseListRow")
+		all_courses.hide()
+		filterCourses($(this))
+		})
+	})
+	//sort the results on changing any sorting parameter
+	$("select#SortingOption").on('change', function(){
+		sort_by = $("#SortingOption option:selected").text().trim();
+		try {
+			trackEvents(gaPrefix + sort_by,'Sort list by Click', 'Sort/Filter');
+		} catch(e) {
+			console.error('Could not track "Sort list by" Click (' + error.name + ')');
+		}
+		appendSortedCourses()
+	})
+	//fire multifilter
+	$('div.ms-drop.bottom :input').live('change',function()
+	{
+		multi_features = [];
+		$('div.ms-drop.bottom :input:checked').each(function(){
+			multi_features.push($(this).next().text());
+		});	
+		sel_features = '';
+		for( i=0;i<multi_features.length;i++){
+			if(sel_features == '') {
+				sel_features = multi_features[i];
+			} else {
+				sel_features = sel_features + ',' + multi_features[i];
+			}
+		}
+		if(sel_features != ''){
+			try {
+				trackEvents(gaPrefix + sel_features,'Content Features Click', 'Sort/Filter');
+			} catch(e) {
+				console.error('Could not track Content Features Click (' + error.name + ')');
+			}
+		}
+		all_sections = $('div.courseListDiv');
+		$.each(all_sections,function()
+		{
+		all_courses = $(this).find("li.courseListRow")
+		all_courses.hide()
+		filterCourses($(this))
+		})
+	});
+}
+//end
+function clearMultipleSelect()
+{
+	$("select.multiselector").multipleSelect('uncheckAll');
+	all_sections = $('div.courseListDiv');
+		$.each(all_sections,function()
+		{
+		all_courses = $(this).find("li.courseListRow")
+		all_courses.hide()
+		filterCourses($(this))
+		})
+}
+
+

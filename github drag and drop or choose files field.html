@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Files</title>
+	<style>.repo-file-upload-target .repo-file-upload-outline {
+    height: 94%;
+    left: 1%;
+    position: absolute;
+    top: 3%;
+    width: 98%;
+}
+.repo-file-upload-outline {
+    height: 100%;
+    width: 100%;
+}
+* {
+    box-sizing: border-box;
+}
+user agent stylesheet
+div {
+    display: block;
+}
+.repo-file-upload-target {
+    color: #666;
+    padding-bottom: 80px;
+    padding-top: 100px;
+    position: relative;
+}
+.blankslate {
+    background-color: #fafbfc;
+    border: 1px solid #e1e4e8;
+    border-radius: 3px;
+    box-shadow: inset 0 0 10px rgba(27,31,35,.05);
+    padding: 32px;
+    text-align: center;
+}</style>
+</head>
+<body>
+<div class="js-upload-manifest-file-container">
+      <!-- '"` --><!-- </textarea></xmp> --><form class="d-none js-upload-manifest-form" action="/upload/manifests" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓"><input type="hidden" name="authenticity_token" value="CYqg26FsCTUmlxKFl6Se/5xMv412D/kVDalE5keV+/ZFchpuF0DcD5OkPTLwO0pkZMti8Psu4ZwKWtzf9kubsA==">
+        <input type="hidden" name="repository_id" value="188889633">
+        <input type="hidden" name="directory_binary" value="">
+</form>
+      <!-- '"` --><!-- </textarea></xmp> --><form action="/upload/upload-manifest-files" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓"><input type="hidden" name="authenticity_token" value="kKyttw4gHlgI+HmRkhaHfNIYMVIs7MH6KxSqTWE5o9kQOMq3wxH0ggDgB0j65r6WEuuFErR8/G2ENpaI4jV9VA==">
+        <file-attachment class="d-block blankslate js-upload-manifest-file repo-file-upload-target" data-upload-repository-id="188889633" data-directory-upload-max-files="100" directory="true" data-upload-policy-url="/upload/policies/upload-manifest-files" data-upload-policy-authenticity-token="NDv3JKLJAOYe907FLHWyETirdVZhdP+re4icfr69TWq0fnksYRvz9OAAglRUuckdJNkZs9Gw6WlkURPHrzOpgw==">
+
+          <div class="repo-file-upload-outline"></div>
+          <img alt="Feature image" draggable="false" src="https://github.githubassets.com/images/files-lg.svg" width="204" height="52">
+          <h2 class="repo-file-upload-text initial-text">Drag files here to add them to your repository</h2>
+          <h2 class="repo-file-upload-text alternate-text">Drag additional files here to add them to your repository</h2>
+          <h2 class="repo-file-upload-drop-text">Drop to upload your files</h2>
+
+
+          <p class="repo-file-upload-choose">
+            <input type="file" multiple="" class="manual-file-chooser js-manual-file-chooser" aria-label="Choose your files">
+            Or <a class="manual-file-chooser-text" href="#">choose your files</a>
+          </p>
+
+          <div class="repo-file-upload-errors">
+            <span class="error too-big">
+              Yowza, that’s a big file. Try again with a file smaller than 25MB.
+            </span>
+            <span class="error too-many">
+              Yowza, that’s a lot of files. Try again with fewer than 100 files.
+            </span>
+            <span class="error empty">
+              This file is empty.
+            </span>
+            <span class="error hidden-file">
+              This file is hidden.
+            </span>
+            <span class="error failed-request">
+              Something went really wrong, and we can’t process that file.
+            </span>
+          </div>
+</file-attachment></form>
+      <div class="repo-file-upload-progress js-upload-progress">
+        <div class="repo-file-upload-meter js-upload-meter"></div>
+        <div class="repo-file-upload-meter-text js-upload-meter-text">
+          <span class="repo-file-upload-info">
+            Uploading
+            <span class="js-upload-meter-range-start"></span>
+            of
+            <span class="js-upload-meter-range-end"></span>
+            files
+          </span>
+          <p class="repo-file-upload-meter-filename js-upload-meter-filename"></p>
+        </div>
+      </div>
+    </div>
+
+
+</body>
+</html>

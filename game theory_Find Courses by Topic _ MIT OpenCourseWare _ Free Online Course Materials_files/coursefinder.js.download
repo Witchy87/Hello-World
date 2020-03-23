@@ -1,0 +1,271 @@
+    // MIT OpenCourseWare 
+   
+	// filter variables for limiting the results in filtered courses.*/
+	var filters={'avlectures':false,
+                 'lectureNotes':false,
+                 'exams':false,
+                 'projectWithExmp':false,
+                 'textbooks':false,
+				 'simulations':false};   
+    	
+    var currentDept="";
+    var currentResults = [];
+		
+	jQuery.ajaxSetup ({ 
+        // Disable caching of AJAX responses */ 
+        cache: false 
+    });
+    
+	// keydown handler for keyboard navigation in educator and course finder pages
+	function handler(e) {
+	    var key = e.which || e.keyCode;
+        var $newNode = null;
+        var $currentNode = getCurrentNode();
+	    if (key >= 35 && key <= 40) {
+            $newNode = navigate($currentNode, key, e);
+		    if (isValidNode($newNode)) {
+                setCurrentNode($newNode, key);
+            }
+            return false;
+        }
+		return true;
+	}
+		
+	function navigate($start, key, e) {
+        if (!$start || $start.length == 0) return null;
+        var parentDiv = $start.parent();		
+        switch (key) {
+			case 35: return $("p:last", parentDiv);   // end key moves to last item in current browser pane
+			
+			case 36:                              // home key moves to first item in current browser pane, ctrl + home moves to first item in first browser pane
+			    if (e.ctrlKey) {
+					if (parentDiv.is($(".scroller", "#br3"))) {
+					    var br2SelectedNode = getSelectedNode("#br2");
+                        var br1SelectedNode = getSelectedNode("#br1");
+                        br2SelectedNode.attr("aria-expanded", "false").attr("tabindex", "-1");
+                        br1SelectedNode.attr("aria-expanded", "false").attr("tabindex", "-1");						
+					}
+					else if (parentDiv.is($(".scroller", "#br2"))) {
+						var br1SelectedNode = getSelectedNode("#br1");
+                        br1SelectedNode.attr("aria-expanded", "false").attr("tabindex", "-1");
+					}
+					return $("p:first", $(".scroller", "#br1"));
+				}
+			    return $("p:first", $start.parent());
+			
+            case 38: return previous(); // up arrow moves to previous sibling
+          
+		    case 40: return next(); // down arrow moves to next sibling
+          		  
+		    case 37:		        // left arrow collapses to the selected node in previous browser pane
+				var comeBackNode = null;
+                if (parentDiv.is($(".scroller", "#br1"))) return comeBackNode;
+			    if (parentDiv.is($(".scroller", "#br2"))) {
+			        comeBackNode = getSelectedNode("#br1");
+			    }
+			    else if (parentDiv.is($(".scroller", "#br3"))) {
+			        comeBackNode = getSelectedNode("#br2");
+                }
+			    comeBackNode.attr("aria-expanded", "false");
+			    return comeBackNode;
+		  
+		    case 39:
+                if ($start.hasClass("none")) {
+					return null;
+				}			
+			    return expand($start);         // right arrow selects current node and shifts focus to first node in next browser pane
+					
+            default: return null;
+        } // end of switch
+
+        function next() {
+            return $start.next();
+        } // next
+
+        function previous () {
+            return $start.prev();
+        } // previous
+		
+		function getSelectedNode(container) {    // returns the item selected by user in the browser pane passed as argument
+			return $("p", $(".scroller", container)).filter(function() {
+                                       return $(this).attr("tabindex") == "0"; });
+		}
+    }
+	  
+	function getCurrentNode() {
+        var $node = $('[is-focused=yes]');
+        return (isValidNode($node))?$node : null;
+    }
+	  
+	function isValidNode($node) {
+        return ($node && $node.length == 1);
+    }
+	  
+	function setCurrentNode($newNode, key) {
+        var $node = getCurrentNode();
+        if (isValidNode($newNode) && isValidNode($node)) {
+            $node.removeAttr("is-focused");
+			$newNode.attr({"is-focused": "yes"});
+			if (key != 39) {
+			    $node.attr("tabindex", "-1");
+			    $newNode.attr("tabindex", "0");
+			}
+			$newNode.focus();
+            return $newNode;
+        }
+        return null;
+    }
+
+    function setLiveRegionCount(parentElem, tag) {
+	    var count = $(tag, parentElem).length;
+	    var readerMsg = "";
+		if (count == 1) {
+			readerMsg = count + " course returned.";      
+	    }
+	    else {
+	        readerMsg = count + " courses returned.";
+	    }
+		readerMsg += " Tab to filter selections.";
+	    $("#childrencount").text(readerMsg);		
+	}	
+	
+	// dictionaries for determining levelOrder and semOrder , to be used in method custom_sort.*/
+	LEVEL_SORT_ORDER_DICT = {'Undergraduate': 1,
+                             'Graduate' : 3,
+                             'Both' : 2,
+                             'Non Credit':4};
+	SEMESTER_SORT_ORDER_DICT = { 'Fall': 1,
+								 'Summer' : 2,
+								 'Spring' : 3,
+                     	         'January IAP': 4};
+							
+	// method for formatting sort_as attribute of a course in order to determine coursenumber1 and coursenumber2 */
+	function formatMCN (str, max) {return str.length < max ? formatMCN("0" + str, max) : str;}
+	
+    function custom_sort(objarr,level_sort)
+    {
+        for(var i=0;i<objarr.length;i++)
+        {
+            for(var j=0;j<((objarr.length-1)-i);j++)
+            { 
+			    // retrieval  of mcn,level, year & sem for courses currently in objarr[j] and objarr[j+1] */
+				var secobj = objarr[j+1];
+				var semister1 = new String(objarr[j].sem);
+				var semister2 = new String(secobj.sem);
+				
+				var levelOrder1 = LEVEL_SORT_ORDER_DICT[objarr[j].level];
+				var levelOrder2 = LEVEL_SORT_ORDER_DICT[secobj.level];	
+				var coursenumber1 = formatMCN(objarr[j].sort_as.split('.')[0],3);
+				var coursenumber2 = formatMCN(secobj.sort_as.split('.')[0],3);
+				
+				var lastcoursenumber1 = objarr[j].sort_as.split('.')[1];
+				var lastcoursenumber2 = secobj.sort_as.split('.')[1];
+						
+				
+				var courseyear1 = objarr[j].sem.split(' ')[1];
+				if (courseyear1 == 'IAP'){courseyear1 = objarr[j].sem.split(' ')[2];} 
+				var courseyear2 = semister2.split(' ')[1];		    
+				if (courseyear2 == 'IAP'){courseyear2 = semister2.split(' ')[2];}		
+				
+				var courseSem1 = objarr[j].sem.substring(0,objarr[j].sem.lastIndexOf(" "));
+				var courseSem2 = semister2.substring(0,semister2.lastIndexOf(" "));
+				var semOrder1 = SEMESTER_SORT_ORDER_DICT[courseSem1];
+				var semOrder2 = SEMESTER_SORT_ORDER_DICT[courseSem2];			
+			   
+			    function swap(objarr) 
+				{	//swaping objarr[j] and objarr[j+1]	*/		
+				    var intermediate;
+					intermediate = objarr[j];
+					objarr[j] = objarr[j+1];
+					objarr[j+1] = intermediate;
+				  return objarr;
+				}	
+				// comparision of mcn,level, year & sem for courses currently in objarr[j] and objarr[j+1] */
+				if ((level_sort==true ) && ((levelOrder1 > levelOrder2? 1 : (levelOrder1 < levelOrder2 ? -1 : 0 )) == 1))
+				{                
+						objarr=swap(objarr);
+				}
+				else if((level_sort==false ) || ((levelOrder1 > levelOrder2? 1 : (levelOrder1 < levelOrder2 ? -1 : 0 )) == 0))
+				{                
+					if((coursenumber1 < coursenumber2? -1 : (coursenumber1 > coursenumber2 ? 1 : 0 )) == 1)
+					{ 
+							 objarr=swap(objarr);
+					}
+				   else if((coursenumber1 < coursenumber2? -1 : (coursenumber1 > coursenumber2 ? 1 : 0 )) == 0)
+				   {
+						if((lastcoursenumber1 > lastcoursenumber2? 1 : (lastcoursenumber1 > lastcoursenumber2 ? -1 : 0 )) == 1)
+						{	
+							objarr=swap(objarr);
+						}
+						else if((lastcoursenumber1 < lastcoursenumber2? 1 : (lastcoursenumber1 > lastcoursenumber2 ? -1 : 0 )) == 0)
+						{
+							if((courseyear1 < courseyear2? 1 : (courseyear1 > courseyear2 ? -1 : 0 )) == 1)
+							{				
+									objarr=swap(objarr);
+							}
+							else if((courseyear1 < courseyear2? 1 : (courseyear1 > courseyear2 ? -1 : 0 )) == 0)
+							{
+								if((semOrder1 > semOrder2? 1 : (semOrder1 < semOrder2 ? -1 : 0 )) == 1)
+								{				
+									objarr=swap(objarr);
+								}
+							}
+						}
+			        }
+                }    
+	        }
+		}   
+	  return objarr;
+	}
+	
+	//method for selecting a particular tag i.e. department no.and topic */
+	function selectTag(obj, tag, level) {
+        highlightSelectedTag(obj,level);
+        var courseResults = $("#courseList"); 
+		$(courseResults).html('');
+        showTags(tag, level + 1);
+    }
+	//method for highlighting selected tag i.e. department no.,course no.,topic ,subtopic,and speciality */
+	function highlightSelectedTag(obj, level) {
+        resetTagColumns(level);
+        var listDiv = $("#br" + level);
+        $("p",listDiv).each(function(index){
+            $(this).css({'backgroundColor' : ""});
+			$(this).css({'color' : ""});
+        });
+        obj.style.backgroundColor = "#FF9000";
+		obj.style.color= "#000000";
+    }
+	//method for resetting the column of a selected tag */
+	function resetTagColumns(level) {        
+        for(var i=level+1;i<=3;i++) {
+            $(".scroller", $('#br'+i)).html("");
+        }
+        $(".scroller",$("#results")).html("");
+    }
+	//function for providing courses according to filers enabled at a time */
+	function filterCourses(courses,enabledFilters){
+        var filteredcourses=[];       
+        var isEligible;
+        $.each(courses,function(key,value){
+            isEligible = true;
+            for(index in enabledFilters)
+            {
+                if(this[enabledFilters[index]]!=filters[enabledFilters[index]])
+                {
+                    isEligible = false;
+                    break;
+                }
+            }
+            if(isEligible)
+                filteredcourses[filteredcourses.length]=this;
+        });
+        return filteredcourses;
+    }
+	//check whether the department is resource or not and hide/show the course number row on the popup
+    function checkSR(obj,department){
+        if (department !='resources') {
+            $(".SRclass").show();
+            }
+        else{$(".SRclass").hide();}
+	}

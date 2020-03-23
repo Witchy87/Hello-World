@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+        <title>Ad</title>
+
+        
+        <style>
+            body, a, img {
+                padding: 0;
+                margin: 0;
+            }
+
+            img {
+                border: 0;
+            }
+        </style>
+        
+    </head>
+
+    <body>
+        <a id="target_main" href="https://www.googleadservices.com/pagead/aclk?sa=L&amp;ai=CUuRqutl2XOy_BoTp_AOlq7nYBqmikKlVieiA44AJ-eGJtoMSEAEgqp_bD2DJrtaM4KSEFKABjsmAkQPIAQmoAwGqBNYBT9DiTG9tVJvHieWelyjJvhyS0916j_qbvQCBaqdpZfeKvwqgCg8koFqKhahKOaYFPvRjBXj3xuI8bSBS-eynpozIFfO46C3QcfibS3S42a9w5ZEtC9EpX2ZsGgxiSBqm_U21_5B5TAV6wbetLpGDzhC5wcIlLvFp-nOegEDdfpKr9J4ZGjpT6l4HRO8cVoWtQ-0EHouUp8eY7HqAOqFfXy3FpNUx7ZF0BnES7AJbbfjk-0uxxIrtasZeJZopzhXdHUHbx-lxhMIVrwvRtE6Y_crsQ2TaEqAGEYAH2rb_bqgHjs4bqAfVyRuoB4HUG6gHqAaoB7oGqAfZyxuoB8_MG6gHpr4b2AcA0ggHCIABEAEYAoAKAdgTAw&amp;num=1&amp;cid=CAASEuRoP9qUOlT2WFkt_yWh4ugS_Q&amp;sig=AOD64_2nt8hKUy5B3Nq33MnIV10o__54Sg&amp;client=ca-pub-3820495015543364&amp;adurl=https://svcs.ebay.com/delstats/email/location?user-id=44813398158&amp;ch=4&amp;ci=-1&amp;si=0&amp;et=adclick&amp;loc=https%253A%252F%252Frover.ebay.com%252Frover%252F1%252F711-154836-061836-8%252F4%253Fmpt%253D42059%2526ff5%253D%2526ff6%253D%2526ff7%253D%2526ff8%253D%2526ff9%253D%2526ff19%253D%2526ext_id%253D%2526ir_DAP_A1%253D0%2526siteid%253D0%2526ff10%253D122078%2526ipn%253Dadmain2%2526ff13%253D1%2526ff14%253Duser%2526ff20%253D97%2526&amp;ff14=user&amp;ff20=97&amp;mpcr=122078&amp;rvr_id=1874975896555&amp;mpre=https%3A%2F%2Fwww.ebay.com%2Fmyb%2FSummary" target="_blank">
+            <img src="index_data/124894ee43e811__300x250_Frame.png" alt="Ad">
+        </a>
+                <script language="javascript">
+/* Static Image New CDN include */
+</script>
+
+        <script type="text/javascript">
+            (function() {
+                setClickthrough('target_main');
+
+                function setClickthrough(id) {
+                    var el;
+
+                    try {
+                        el = document.getElementById(id);
+                    } catch(_) {}
+
+                    if (!el) return;
+
+                    el.setAttribute('href', getClickUrl(el.getAttribute('href')));
+                }
+
+
+                function getClickUrl(url, opts) {
+                    var PROTOCOL = 'https://';
+
+                    var options = opts || {},
+                        q = getUrlParams();
+
+                    if (typeof url === 'undefined') {
+                        url = 'https://ebay.com';  // fallback
+                    }
+
+                    var mpvc = options['mpvc'] || q['mpvc'],
+                        mpck = options['mpck'] || q['mpck'],
+                        mpcke = options['mpcke'] || q['mpcke'];
+
+                    if (!mpck) {
+                        return url;
+                    }
+
+                    mpvc = (mpvc && mpvc !== '') ? decodeURIComponent(mpvc) : '';
+                    mpck = _prepareMpck(mpck, mpvc, mpcke);
+
+                    //http://jira.nt.vc/browse/FFM-16
+                    return mpvc + mpck + '&mpre=' + encodeURIComponent(url);
+
+                    function _prepareMpck(mpck, mpvc, mpcke) {
+                        // mpck is encoded twice
+                        mpck = decodeURIComponent(decodeURIComponent(mpck));
+
+                        // http://jira.nt.vc/browse/FFM-5
+                        if (mpck.indexOf('://') === -1) {
+                            mpck = PROTOCOL + mpck;
+                        }
+
+                        if ((mpvc !== '') && (mpcke / 1 === 1)) {
+                            mpck = encodeURIComponent(mpck);
+                        }
+
+                        return mpck;
+                    }
+                }
+
+
+                function getUrlParams(url) {
+                    url = url || window.location.href;
+
+                    var hashes = url.slice(url.indexOf('?') + 1).split('&'),
+                        q = {},
+                        hash;
+
+                    for(var i = 0, lng = hashes.length; i < lng; i++) {
+                        hash = hashes[i].split('=');
+                        q[hash[0]] = hash[1];
+                    }
+
+                    return q;
+                }
+            })();
+        </script>
+            <script language="javascript">
+var ffmCtr = {};
+ffmCtr['main'] = "https://www.ebay.com/myb/Summary";
+</script>
+
+
+</body></html>

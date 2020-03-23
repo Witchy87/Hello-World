@@ -1,0 +1,4 @@
+function showThankedTop(){jQuery("#topThanksHot").hide();jQuery("#topThanksAll").show();jQuery("#topthanked_nav_top").addClass("topthanked_selected");jQuery("#topthanked_nav_hot").removeClass("topthanked_selected");}
+function showThankedHot(){jQuery("#topThanksAll").hide();jQuery("#topThanksHot").show();jQuery("#topthanked_nav_top").removeClass("topthanked_selected");jQuery("#topthanked_nav_hot").addClass("topthanked_selected");}
+var noHotThanked;if(noHotThanked){showThankedTop();}
+jQuery(document).ready(function(){jQuery('[data-tooltip]').addClass('tooltip');jQuery('.tooltip').each(function(){jQuery(this).append('<span class="tooltip-content">'+jQuery(this).attr('data-tooltip')+'</span>');});});

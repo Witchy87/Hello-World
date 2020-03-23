@@ -1,0 +1,230 @@
+		/* Course/Resource POPUP */	
+		
+		var focusableElementsString ="a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]";				
+		
+		$(document).ready(function() {
+			
+			/* Show Popup data from json */
+
+			$('#coursePreview').keydown(function(event){trapTabKey($(this),event);})
+
+			function trapTabKey(obj,evt) {
+
+			// if tab or shift-tab pressed
+			if ( evt.which == 9 ) {
+				// get list of all children elements in given object
+				var o = obj.find('*');
+				// get list of focusable items
+				var focusableItems;
+				focusableItems = o.filter(focusableElementsString).filter(':visible')
+
+				// get currently focused item
+				var focusedItem;
+				focusedItem = $(':focus');
+
+				// get the number of focusable items
+				var numberOfFocusableItems;
+				numberOfFocusableItems = focusableItems.length
+
+				// get the index of the currently focused item
+				var focusedItemIndex;
+				focusedItemIndex = focusableItems.index(focusedItem);
+
+				if (evt.shiftKey) {
+					//back tab
+					// if focused on first item and user preses back-tab, go to the last focusable item
+					if(focusedItemIndex==0){
+						focusableItems.get(numberOfFocusableItems-1).focus();
+						evt.preventDefault();
+					}
+					
+				} else {
+					//forward tab
+					// if focused on the last item and user preses tab, go to the first focusable item
+					if(focusedItemIndex==numberOfFocusableItems-1){
+						focusableItems.get(0).focus();
+						evt.preventDefault();				
+					}
+				}
+			}
+		}
+
+		
+		function showCourseInfo(course,coursePath,course_title)
+			{
+
+			if(course_title != null){
+				course_title = course_title
+			}
+			else{
+				course_title = course.title
+			}
+
+			
+			$("#courseThumb").removeAttr('src');     
+			$("#courseTitle").html(course_title)
+			$("#courseSem").html(course.sem);
+			$("#courseLevel").html(course.level);        
+			$("#viewCourse").attr('href',coursePath);		
+			if (course.mcn.indexOf('RES') > -1){
+				$("#viewCourse").children('img').attr('src',"/images/button_view-resource.png")}
+				else{
+					$("#viewCourse").children('img').attr('src',"/images/button_view-course.png")}
+					if(course.mcn.length>110)
+					{
+						$("#courseNo").html(course.mcn.substr(0,110)+"...");
+					}
+					else{
+						$("#courseNo").html(course.mcn);
+					}
+
+					if(course.instructors.length!=0){
+						$("#courseInfoInner .instructor").show();}
+						else{$("#courseInfoInner .instructor").hide();}
+						if(course.instructors.length>180)
+						{
+							$("#courseInstructors").html(course.instructors.substr(0,180)+"...");
+						}
+						else{
+							$("#courseInstructors").html(course.instructors)
+						}
+						if(typeof course.thumb != 'undefined' && course.thumb.length!=0){
+							$("#courseThumb").attr('src',course.thumb);
+							$("#courseThumb").attr('alt',('thumbnail for ' + course.mcn + ' ' + course.title));}
+							else{
+								$("#courseThumb").removeAttr('src');
+								$("#courseThumb").attr('alt','Image not found');
+							}
+							if(course.description.length>500)
+							{
+								$("#courseDesc").html(course.description.substr(0,500)+"...");
+							}
+							else{
+								$("#courseDesc").html(course.description)
+							}
+
+							if(course.features.length!=0){
+								$("#courseInfoInner .last").show();
+								$("#level").removeClass("last");}
+								else{$("#courseInfoInner .last").hide();
+								$("#level").show();
+								$("#level").addClass("last");}
+								features = course.features
+								if(features.indexOf(", This Course at MIT") > 0) {
+                                    features = features.replace(", This Course at MIT", "");
+								} else if(features.indexOf("This Course at MIT") > 0) {
+                                    features = features.replace("This Course at MIT", "");
+								}
+								if(features.length>220)
+								{  	   
+									$("#courseFeatures").html(features.substr(0,220)+"...");
+									$("#courseFeatures").prepend('');            
+								}
+								else{
+									$("#courseFeatures").html(features);
+									$("#courseFeatures").prepend('');
+								}       
+							}
+
+							$('a.preview').live('click',function() {
+								focusedElem =  document.activeElement;            
+								$("#courseTitle").html('');
+								$("#courseNo").html('');
+								$("#courseSem").html('');
+								$("#courseInstructors").html('');
+								$("#courseThumb").removeAttr('src');
+								$("#courseDesc").html('');
+								$("#viewCourse").attr('href','');
+								$("#viewCourse").children('img').attr('src','')
+								$("#courseFeatures").html('');
+								$("#courseLevel").html('');				
+			$('#fade').attr('style','display:block'); // insert an overlay to prevent clicking and make a visual change to indicate the main page is not available
+
+			var popID = $(this).attr('rel'); //Get Popup Name
+			var popURL = $(this).attr('href'); //Get Popup href to define size
+			var popWidth = 468; 			
+
+			
+			//Fade in the Popup and add close button
+			$('#' + popID).fadeIn().css({ 'width': Number( popWidth ) });
+			
+			//Get json path and Disable caching of json
+			var coursePath = popURL
+			var courseJSONPath = coursePath+'/index.json?';
+			var currentCourse;
+			
+			var course_title = null
+			var urlCalled = window.location.pathname
+			if(urlCalled == "/courses/find-by-topic/"){
+				parent_tr = $(this).closest('tr')
+				first_td = $(parent_tr).find("td:first")
+				second_td =  $(parent_tr).find("td:nth-child(2)")
+				a_href_mcn = $(first_td).find("a")
+				a_href_title = $(second_td).find("a")
+				course_number_text = $(a_href_mcn).text()
+				title_text = $(a_href_title).text()
+				if(title_text.includes('(formerly ')){
+					course_title = course_number_text + ' ' + title_text
+				}
+			}
+			
+			
+			$.getJSON(courseJSONPath + new Date().getTime(),{},function(course){
+				currentCourse = course;
+				showCourseInfo(currentCourse,coursePath, course_title = course_title);
+				$('#coursePreview').css('display','block'); // make the modal window visible				
+				$('#coursePreview').attr( "aria-hidden", 'false');					 
+				$( '#viewCourse').focus();				
+			});
+
+			//Fade in Background
+			
+			//$('#fade').css({'filter' : 'alpha(opacity=80)'}).fadeIn(); //Fade in the fade layer - .css({'filter' : 'alpha(opacity=80)'}) is used to fix the IE Bug on fading transparencies 
+
+			return false;
+		});
+
+							$(document).mouseup(function (e){	
+								var container = $("#coursePreview");			
+								if (container.has(e.target).length === 0){
+									container.hide();					
+									$('#fade').css({'style':'display :none'});
+									$('#coursePreview').css('display','none');
+									$( '#coursePreview').attr( "aria-hidden", 'true');						
+								}
+							});
+
+							$(document).keydown(function (e){
+								var container = $("#coursePreview");
+								console.log(e.keyCode);
+								if (e.keyCode == 27){
+									container.hide();					
+									$('#fade').css({'style':'display :none'});
+									$('#coursePreview').css('display','none');
+									$( '#coursePreview').attr( "aria-hidden", 'true');
+									console.log(focusedElem);
+									focusedElem.focus();
+								}
+							});				
+
+							$('#viewCourse').click(function(){
+								window.location.href = $(this).attr('href');
+								return false;				
+							});
+
+
+				//Close Popups and Fade Layer
+		$('a.close, #coursePreview').on('click', function(e) { //When clicking on the close or fade layer...
+			e.preventDefault();
+			$('#coursePreview').fadeOut(function() {
+				$('#fade').css({'style':'display :none'});
+				$('#coursePreview').css('display','none');
+				$( '#coursePreview').attr( "aria-hidden", 'true');				
+			});
+			console.log(focusedElem);
+			focusedElem.focus();
+			return false;
+		});
+
+	});	
+		
